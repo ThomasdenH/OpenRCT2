@@ -2766,7 +2766,7 @@ STR_2759    :Zero Clearance
 STR_2760    :+5K Money
 STR_2761    :Pay For Entrance
 STR_2762    :Pay For Rides
-STR_2763    :???
+STR_2763    :Zero Cl. map
 STR_2764    :Happy Guests
 STR_2765    :Large Tram
 STR_2766    :Win scenario
@@ -3594,3 +3594,5 @@ STR_5257    :{SMALLFONT}{BLACK}Create a new theme based on the current one
 STR_5258    :{SMALLFONT}{BLACK}Delete the current theme
 STR_5259    :{SMALLFONT}{BLACK}Rename the current theme
 STR_5260    :Giant Screenshot
+STR_5261	:Zero Clearance Map
+STR_5262	:Are your sure you want to want to use Zero Clearance on the entire map? This cannot be undone.

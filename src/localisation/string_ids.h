@@ -1426,6 +1426,9 @@ enum {
 
 	STR_GIANT_SCREENSHOT = 5260,
 
+	STR_ZERO_CLEARANCE_TITLE = 5261,
+	STR_ZERO_CLEARANCE_DESCRIPTION = 5262,
+
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768
 };

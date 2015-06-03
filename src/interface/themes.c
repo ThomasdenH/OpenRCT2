@@ -74,6 +74,7 @@ window_colour_scheme gColourSchemes[] = {
 	{ WC_STAFF, { 1, 4, 4, 0, 0, 0 }, 3, 5207, "staff" },
 	{ WC_EDITOR_TRACK_BOTTOM_TOOLBAR, { 135, 135, 135, 0, 0, 0 }, 3, 5247, "editor_track_bottom_toolbar" },
 	{ WC_EDITOR_SCENARIO_BOTTOM_TOOLBAR, { 150, 150, 141, 0, 0, 0 }, 3, 5248, "editor_scenario_bottom_toolbar" },
+	{ WC_ZERO_CLEARANCE_CONFIRMATION, { 154, 0, 0, 0, 0, 0 }, 1, 5248, "zero_clearance_confirmation_prompt" },
 };
 
 

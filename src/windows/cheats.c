@@ -63,6 +63,7 @@ enum WINDOW_CHEATS_WIDGET_IDX {
 	WIDX_FREEZE_CLIMATE = 8,
 	WIDX_OPEN_CLOSE_PARK,
 	WIDX_ZERO_CLEARANCE,
+	WIDX_ZERO_CLEARANCE_MAP,
 	WIDX_WEATHER_SUN,
 	WIDX_WEATHER_THUNDER,
 	WIDX_CLEAR_GRASS,
@@ -142,16 +143,17 @@ static rct_widget window_cheats_misc_widgets[] = {
 	{ WWT_TAB,				1, 34,			64,		17, 43,			0x2000144E,		5179 },						// tab 2
 	{ WWT_TAB,				1,	65,			95,		17,		43,		0x2000144E,		5180 },						// tab 3
 	{ WWT_TAB,				1,	96,			126,	17,		43,		0x2000144E,		5181 },						// tab 4
-	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(1), HPL(1),		2767,			STR_NONE},					// Freeze climate
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(2), HPL(2),		2767,			STR_NONE},					// Freeze climate
 	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(0), HPL(0),		2769,			STR_NONE},					// open / close park
-	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(1), HPL(1),		2759,			STR_NONE},					// Zero Clearance
-	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(2), HPL(2),		2757,			STR_NONE},					// Sun
-	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(2), HPL(2),		2758,			STR_NONE},					// Thunder
-	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(3), HPL(3),		2752,			STR_NONE},					// Clear grass
-	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(3), HPL(3),		2753,			STR_NONE},					// Mowed grass
-	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(4), HPL(4),		2754,			STR_NONE},					// Water plants
-	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(4), HPL(4),		2755,			STR_NONE},					// Fix vandalism
-	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(5), HPL(5),		2756,			STR_NONE},					// Remove litter
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(1), HPL(1),		2759,			STR_NONE},					// Zero Clearance for tile
+	{ WWT_CLOSEBOX,         1, XPL(1),  WPL(1), YPL(1), HPL(1),     2763,           STR_NONE},					// Zero Clearance for map
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(3), HPL(3),		2757,			STR_NONE},					// Sun
+	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(3), HPL(3),		2758,			STR_NONE},					// Thunder
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(4), HPL(4),		2752,			STR_NONE},					// Clear grass
+	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(4), HPL(4),		2753,			STR_NONE},					// Mowed grass
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(5), HPL(5),		2754,			STR_NONE},					// Water plants
+	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(5), HPL(5),		2755,			STR_NONE},					// Fix vandalism
+	{ WWT_CLOSEBOX,			1, XPL(0),	WPL(0),	YPL(6), HPL(6),		2756,			STR_NONE},					// Remove litter
 	{ WWT_CLOSEBOX,			1, XPL(1),	WPL(1),	YPL(0), HPL(0),		2766,			STR_NONE},					// Win scenario
 	{ WWT_CHECKBOX,			1, XPL(0),    OWPL, YPL(8),OHPL(8),		5157,			STR_NONE}, 					// Unlock all prices
 	{ WIDGETS_END },
@@ -193,6 +195,8 @@ static void window_cheats_update(rct_window *w);
 static void window_cheats_invalidate();
 static void window_cheats_paint();
 static void window_cheats_set_page(rct_window *w, int page);
+
+static void window_zero_clearance_confirmation_open();
 
 static void* window_cheats_money_events[] = {
 	window_cheats_emptysub,
@@ -329,13 +333,33 @@ static void* window_cheats_page_events[] = {
 static uint32 window_cheats_page_enabled_widgets[] = {
 	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_HIGH_MONEY) | (1 << WIDX_PARK_ENTRANCE_FEE),
 	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_HAPPY_GUESTS) | (1 << WIDX_TRAM_GUESTS) | (1 << WIDX_NAUSEA_GUESTS),
-	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_FREEZE_CLIMATE) | (1 << WIDX_OPEN_CLOSE_PARK) | (1 << WIDX_ZERO_CLEARANCE) | (1 << WIDX_WEATHER_SUN) | (1 << WIDX_WEATHER_THUNDER) | (1 << WIDX_CLEAR_GRASS) | (1 << WIDX_MOWED_GRASS) | (1 << WIDX_WATER_PLANTS) | (1 << WIDX_FIX_VANDALISM) | (1 << WIDX_REMOVE_LITTER) | (1 << WIDX_WIN_SCENARIO) | (1 << WIDX_UNLOCK_ALL_PRICES),
+	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_FREEZE_CLIMATE) | (1 << WIDX_OPEN_CLOSE_PARK) | (1 << WIDX_ZERO_CLEARANCE) | (1 << WIDX_ZERO_CLEARANCE_MAP) | (1 << WIDX_WEATHER_SUN) | (1 << WIDX_WEATHER_THUNDER) | (1 << WIDX_CLEAR_GRASS) | (1 << WIDX_MOWED_GRASS) | (1 << WIDX_WATER_PLANTS) | (1 << WIDX_FIX_VANDALISM) | (1 << WIDX_REMOVE_LITTER) | (1 << WIDX_WIN_SCENARIO) | (1 << WIDX_UNLOCK_ALL_PRICES),
 	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_RENEW_RIDES) | (1 << WIDX_REMOVE_SIX_FLAGS) | (1 << WIDX_MAKE_DESTRUCTIBLE) | (1 << WIDX_FIX_ALL) | (1 << WIDX_FAST_LIFT_HILL) | (1 << WIDX_DISABLE_BRAKES_FAILURE) | (1 << WIDX_DISABLE_ALL_BREAKDOWNS)
 };
 
 static void window_cheats_draw_tab_images(rct_drawpixelinfo *dpi, rct_window *w);
 
 #pragma region Cheat functions
+
+static void cheat_set_zero_clearance_tile(int tile_x, int tile_y){
+	rct_map_element *mapElement = map_get_first_element_at(tile_x, tile_y);
+	do {
+		if (map_element_get_type(mapElement) != MAP_ELEMENT_TYPE_SURFACE) {
+			mapElement->clearance_height = 0;
+		}
+	} while (!map_element_is_last_for_tile(mapElement++));
+}
+
+static void cheat_set_zero_clearance_map(){
+	map_element_iterator it;
+
+	map_element_iterator_begin(&it);
+	while (map_element_iterator_next(&it)) {
+		if (map_element_get_type(it.element) != MAP_ELEMENT_TYPE_SURFACE) {
+			it.element->clearance_height = 0;
+		}
+	}
+}
 
 static void cheat_set_grass_length(int length)
 {
@@ -623,6 +647,9 @@ static void window_cheats_misc_mouseup()
 			return;
 		}
 		break;
+	case WIDX_ZERO_CLEARANCE_MAP:
+		window_zero_clearance_confirmation_open();
+		break;
 	case WIDX_WEATHER_SUN:
 		climate_force_weather(WEATHER_SUNNY);
 		break;
@@ -873,10 +900,110 @@ static void window_cheats_misc_tool_down()
 	int tile_x = (dest_x & 0xFFE0) >> 5;
 	int tile_y = (dest_y & 0xFFE0) >> 5;
 
-	rct_map_element *mapElement = map_get_first_element_at(tile_x, tile_y);
-	do {
-		if (map_element_get_type(mapElement) != MAP_ELEMENT_TYPE_SURFACE) {
-			mapElement->clearance_height = 0;
-		}
-	} while (!map_element_is_last_for_tile(mapElement++));
+	cheat_set_zero_clearance_tile(tile_x, tile_y);
+}
+
+#define WW_ZC 250
+#define WH_ZC 80
+
+enum WINDOW_ZERO_CLEARANCE_WIDGET_IDX {
+	WZCIDX_BACKGROUND,
+	WZCIDX_TITLE,
+	WZCIDX_CLOSE,
+	WZCIDX_OK,
+	WZCIDX_CANCEL
+};
+
+static rct_widget window_zero_clearance_widgets[] = {
+	{ WWT_FRAME,			0,		0,				WW_ZC,			0,				WH_ZC,		STR_NONE,						STR_NONE },					// panel / background
+	{ WWT_CAPTION,			0,		1,				WW_ZC,			1,				14,			STR_ZERO_CLEARANCE_TITLE,		STR_WINDOW_TITLE_TIP },		// title bar
+	{ WWT_CLOSEBOX,			0,		WW_ZC - 13,		WW_ZC,			2,				13,			STR_CLOSE_X,					STR_CLOSE_WINDOW_TIP },		// close x button
+	{ WWT_DROPDOWN_BUTTON,	0,		8,				WW_ZC / 2 - 4,	WH_ZC - 16,		WH_ZC - 5,	STR_OK,							STR_NONE },					// ok
+	{ WWT_DROPDOWN_BUTTON,  0,		WW_ZC / 2 + 4,	WW_ZC - 8,		WH_ZC - 16,		WH_ZC - 5,	STR_CANCEL,						STR_NONE },					// cancel
+	{ WIDGETS_END },
+};
+
+static void window_zero_clearance_emptysub() { }
+static void window_zero_clearance_mouseup();
+static void window_zero_clearance_invalidate();
+static void window_zero_clearance_paint();
+
+static void* window_zero_clearance_events[] = {
+	window_zero_clearance_emptysub,
+	window_zero_clearance_mouseup,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub, 
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub, 
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_emptysub,
+	window_zero_clearance_invalidate,
+	window_zero_clearance_paint,
+	window_zero_clearance_emptysub,
+};
+
+static void window_zero_clearance_confirmation_open(){
+	rct_window* window;
+
+	// Check if window is already open
+	window = window_bring_to_front_by_class(WC_ZERO_CLEARANCE_CONFIRMATION);
+	if (window != NULL)
+		return;
+
+	window = window_create_centred(WW_ZC, WH_ZC, (uint32*)window_zero_clearance_events, WC_ZERO_CLEARANCE_CONFIRMATION, 0);
+	window->widgets = window_zero_clearance_widgets;
+	window->enabled_widgets = (1 << WZCIDX_CLOSE) | (1 << WZCIDX_OK) | (1 << WZCIDX_CANCEL);
+	window_init_scroll_widgets(window);
+}
+
+static void window_zero_clearance_mouseup(){
+	short widgetIndex;
+	rct_window *w;
+
+	window_widget_get_registers(w, widgetIndex);
+
+	switch (widgetIndex){
+		case WZCIDX_OK:
+			cheat_set_zero_clearance_map();
+		case WZCIDX_CLOSE:
+		case WZCIDX_CANCEL:
+			window_close(w);
+			break;
+	}
+}
+
+static void window_zero_clearance_invalidate(){
+	rct_window *w;
+
+	window_get_register(w);
+	colour_scheme_update(w);
+}
+
+static void window_zero_clearance_paint(){
+	rct_window *w;
+	rct_drawpixelinfo *dpi;
+
+	window_paint_get_registers(w, dpi);
+
+	window_draw_widgets(w, dpi);
+
+	gfx_draw_string_left_wrapped(dpi, w, w->x + 8, w->y + 22, w->width - 16, STR_ZERO_CLEARANCE_DESCRIPTION, 1);
+
 }
