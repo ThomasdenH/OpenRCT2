@@ -26,8 +26,14 @@
 #include "../interface/window.h"
 #include "../interface/themes.h"
 
+enum {
+	WIDX_OPTIONS,
+	WIDX_CONTENT_BROWSER,
+};
+
 static rct_widget window_title_options_widgets[] = {
-	{ WWT_DROPDOWN_BUTTON, 2, 0, 79, 0, 11, STR_OPTIONS, STR_NONE },
+	{ WWT_DROPDOWN_BUTTON,	2,	0,	79,	0,	11, STR_OPTIONS, STR_NONE },
+	{ WWT_DROPDOWN_BUTTON,	2,	0,	79,	11, 22, STR_OPTIONS, STR_NONE },
 	{ WIDGETS_END },
 };
 
@@ -76,13 +82,13 @@ void window_title_options_open()
 
 	window = window_create(
 		RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_WIDTH, sint16) - 80, 0,
-		80, 12,
+		80, 23,
 		(uint32*)window_title_options_events,
 		WC_TITLE_OPTIONS,
 		WF_STICK_TO_BACK
 	);
 	window->widgets = window_title_options_widgets;
-	window->enabled_widgets |= 1;
+	window->enabled_widgets = (1 << WIDX_OPTIONS) | (1 << WIDX_CONTENT_BROWSER);
 	window_init_scroll_widgets(window);
 	window->flags |= 16;
 }
@@ -97,8 +103,14 @@ static void window_title_options_mouseup()
 	if (RCT2_GLOBAL(RCT2_ADDRESS_RUN_INTRO_TICK_PART, uint8) != 0)
 		return;
 
-	if (widgetIndex == 0)
+	switch (widgetIndex){
+	case WIDX_OPTIONS:
 		window_options_open();
+		break;
+	case WIDX_CONTENT_BROWSER:
+		window_content_browser_open();
+		break;
+	}
 }
 
 static void window_title_options_paint()

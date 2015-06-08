@@ -417,6 +417,8 @@ enum {
 	WC_STAFF = 220,
 	WC_EDITOR_TRACK_BOTTOM_TOOLBAR = 221,
 	WC_EDITOR_SCENARIO_BOTTOM_TOOLBAR = 222,
+
+	WC_CONTENT_BROWSER = 223,
 } WINDOW_CLASS;
 
 enum PROMPT_MODE {
@@ -576,6 +578,7 @@ void window_text_input_open(rct_window* call_w, int call_widget, rct_string_id t
 void window_text_input_raw_open(rct_window* call_w, int call_widget, rct_string_id title, rct_string_id description, utf8string existing_text, int maxLength);
 rct_window *window_mapgen_open();
 rct_window *window_loadsave_open(int type, char *defaultName);
+void window_content_browser_open();
 
 void window_editor_main_open();
 void window_editor_bottom_toolbar_open();

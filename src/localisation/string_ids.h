@@ -1486,6 +1486,8 @@ enum {
 	STR_CHEAT_INGAME_LAND_OWNERSHIP_EDITOR_DISABLE = 5279,
 	STR_CHEAT_INGAME_LAND_OWNERSHIP_EDITOR_TIP = 5280,
 
+	STR_CONTENT_BROWSER = 5285,
+
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768
 };
