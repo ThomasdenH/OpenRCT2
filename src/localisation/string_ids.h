@@ -1487,6 +1487,14 @@ enum {
 	STR_CHEAT_INGAME_LAND_OWNERSHIP_EDITOR_TIP = 5280,
 
 	STR_CONTENT_BROWSER = 5285,
+	STR_CONTENT_NAME = 5286,
+	STR_CONTENT_DOWNLOADS = 5287,
+
+	STR_CONTENT_TRACKS = 5288,
+	STR_CONTENT_THEMES = 5289,
+	STR_CONTENT_SCENARIOS = 5290,
+	STR_CONTENT_FILTER = 5291,
+	STR_CONTENT_DOWNLOAD = 5292,
 
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768

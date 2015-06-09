@@ -3619,3 +3619,10 @@ STR_5282    :RCT1 Ride Open/Close Lights
 STR_5283    :RCT1 Park Open/Close Lights
 STR_5284    :RCT1 Scenario Selection Font
 STR_5285	:Content Browser
+STR_5286	:Name:
+STR_5287	:Downloads:
+STR_5288	:Tracks
+STR_5289	:Themes
+STR_5290	:Scenarios
+STR_5291	:Filter content:
+STR_5292	:Download

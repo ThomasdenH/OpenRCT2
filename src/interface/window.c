@@ -2130,7 +2130,7 @@ void window_resize_gui(int width, int height)
 
 	rct_window *optionsWind = window_find_by_class(WC_TITLE_OPTIONS);
 	if (optionsWind != NULL) {
-		optionsWind->x = width - 80;
+		optionsWind->x = width - 120;
 	}
 }
 

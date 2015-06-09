@@ -32,8 +32,8 @@ enum {
 };
 
 static rct_widget window_title_options_widgets[] = {
-	{ WWT_DROPDOWN_BUTTON,	2,	0,	79,	0,	11, STR_OPTIONS, STR_NONE },
-	{ WWT_DROPDOWN_BUTTON,	2,	0,	79,	11, 22, STR_OPTIONS, STR_NONE },
+	{ WWT_DROPDOWN_BUTTON,	2,	0,	120,	0,	11, STR_OPTIONS,			STR_NONE },
+	{ WWT_DROPDOWN_BUTTON,	2,	0,	120,	11, 22, STR_CONTENT_BROWSER,	STR_NONE },
 	{ WIDGETS_END },
 };
 
@@ -81,8 +81,8 @@ void window_title_options_open()
 	rct_window* window;
 
 	window = window_create(
-		RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_WIDTH, sint16) - 80, 0,
-		80, 23,
+		RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_WIDTH, sint16) - 120, 0,
+		120, 23,
 		(uint32*)window_title_options_events,
 		WC_TITLE_OPTIONS,
 		WF_STICK_TO_BACK
