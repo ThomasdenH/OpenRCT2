@@ -15,6 +15,7 @@
 #define URL_THEMES "https://openrct.net/api/v2/content/cat/scenarios/info.json"
 #define URL_SCENARIOS "https://openrct.net/api/v2/content/cat/themes/info.json"
 
+
 typedef struct {
 	char* title;
 	bool featured;
