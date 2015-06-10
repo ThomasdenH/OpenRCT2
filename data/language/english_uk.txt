@@ -3626,3 +3626,4 @@ STR_5289	:Themes
 STR_5290	:Scenarios
 STR_5291	:Filter content:
 STR_5292	:Download
+STR_5293	:Description:

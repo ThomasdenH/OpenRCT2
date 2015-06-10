@@ -1495,6 +1495,7 @@ enum {
 	STR_CONTENT_SCENARIOS = 5290,
 	STR_CONTENT_FILTER = 5291,
 	STR_CONTENT_DOWNLOAD = 5292,
+	STR_CONTENT_DESCRIPTION = 5293,
 
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768

@@ -8,6 +8,8 @@
 #include "../interface/themes.h"
 #include "../network/http.h"
 
+#include "math.h"
+
 #define WW 600
 #define WH 400
 
@@ -22,6 +24,7 @@ typedef struct {
 	int downloads;
 	int type;
 	char* url;
+	char* description;
 } content_browser_item;
 
 enum {
@@ -40,6 +43,8 @@ enum {
 
 content_browser_item** browser_items;
 int* item_count;
+
+// This is the actual index in the above list, NOT in the on screen list
 int clicked_item = -1;
 
 char _filter_string[41];
@@ -115,7 +120,7 @@ static void* window_content_browser_events[] = {
 	window_content_browser_textinput,
 	window_content_browser_emptysub,
 	window_content_browser_emptysub,
-	window_content_browser_tooltip,
+	window_content_browser_emptysub,
 	window_content_browser_emptysub,
 	window_content_browser_emptysub,
 	window_content_browser_invalidate,
@@ -140,7 +145,7 @@ void window_content_browser_open(){
 	window_init_scroll_widgets(window);
 
 	item_count = malloc(sizeof(int) * TYPE_COUNT);
-	browser_items = malloc(sizeof(content_browser_item**) * TYPE_COUNT);
+	browser_items = malloc(sizeof(content_browser_item*) * TYPE_COUNT);
 	for (int x = 0; x < TYPE_COUNT; x++){
 		item_count[x] = 0;
 	}
@@ -152,73 +157,85 @@ static void handle_json(http_json_response *response){
 	if (response == NULL)
 		return;
 
-	const char* name = json_string_value(json_object_get(response->root, "name"));
+	rct_window *window = window_bring_to_front_by_class(WC_CONTENT_BROWSER);
+	if (window == NULL)
+		// The window has been closed
+		return;
 
+	// Find out the type
+	const char* name = json_string_value(json_object_get(response->root, "name"));
+	if (name == NULL)
+		return;
 	int content_type = -1;
 
-	if (strcmp(name, "Tracks")){
+	if (strcmp(name, "Tracks") == 0)
 		content_type = TYPE_TRACK;
-	}
-	else if (strcmp(name, "Themes")){
+	else if (strcmp(name, "Themes") == 0)
 		content_type = TYPE_THEME;
-	}
-	else if (strcmp(name, "Scenarios")){
+	else if (strcmp(name, "Scenarios") == 0)
 		content_type = TYPE_SCENARIO;
-	}
 	else return;
 
+	// The number of items
 	item_count[content_type] = (int)json_integer_value(json_object_get(response->root, "numberOfItems"));
+	if (item_count[content_type] <= 0)
+		return;
 
-	printf("Number of items: %d\n", item_count[content_type]);
-
-	browser_items[content_type] = malloc(sizeof(content_browser_item*) * item_count[content_type]);
+	browser_items[content_type] = malloc(sizeof(content_browser_item) * item_count[content_type]);
 
 	json_t *json_items = json_object_get(response->root, "items");
+	if (json_items == NULL)
+		return;
 
 	char number[256];
-
-	printf("Items: %d\n", json_items);
-
 	for (int index = 0; index < item_count[content_type]; index++){
+
 		sprintf(number, "%d", index + 1);
 		json_t *item = json_object_get(json_items, number);
-		printf("Name: %s Adress: %d\n", number, item);
 
-		content_browser_item* browser_item = (content_browser_item*)malloc(sizeof(content_browser_item));
+		if (item != NULL){
 
-		// Copy title
-		const char* title = json_string_value(json_object_get(item, "title"));
+			int string_length;
 
-		if (title == NULL){
-			puts("TITLE NULL!");
+			// Copy title
+			const char* title = json_string_value(json_object_get(item, "title"));
+			if (title == NULL)
+				title = "INVALID TITLE";
+			string_length = strlen(title);
+			browser_items[content_type][index].title = malloc(sizeof(char) * string_length + 1);
+			browser_items[content_type][index].title[string_length] = '\0';
+			memcpy(browser_items[content_type][index].title, title, string_length);
+
+			browser_items[content_type][index].downloads = (int)json_integer_value(json_object_get(item, "downloads"));
+
+			browser_items[content_type][index].featured = json_boolean_value(json_object_get(item, "featured"));
+
+			browser_items[content_type][index].type = content_type;
+
+			// Copy url
+			const char* url = json_string_value(json_object_get(item, "downloadUrl"));
+			if (url == NULL)
+				url = "URL NOT FOUND";
+			string_length = strlen(url);
+			browser_items[content_type][index].url = malloc(sizeof(char) * string_length + 1);
+			browser_items[content_type][index].url[string_length] = '\0';
+			memcpy(browser_items[content_type][index].url, url, string_length);
+			
+			// Description
+			const char* description = json_string_value(json_object_get(item, "description"));
+			if (description == NULL)
+				description = "DESCRIPTION NOT FOUND";
+			string_length = strlen(description);
+			browser_items[content_type][index].description = malloc(sizeof(char) * string_length + 1);
+			browser_items[content_type][index].description[string_length] = '\0';
+			memcpy(browser_items[content_type][index].description, description, string_length);
+
 		}
-
-		browser_item->title = malloc(sizeof(char) * strlen(title) + 1);
-		browser_item->title[strlen(title)] = '\0';
-		memcpy(browser_item->title, title, strlen(title));
-
-		browser_item->downloads = (int)json_integer_value(json_object_get(item, "downloads"));
-		browser_item->featured = json_boolean_value(json_object_get(item, "featured"));
-		browser_item->type = content_type;
-
-		// Copy url
-		const char* url = json_string_value(json_object_get(item, "downloadUrl"));
-		if (url == NULL){
-			puts("URL IS NULL!");
-		}
-		browser_item->url = malloc(sizeof(char) * strlen(url) + 1);
-		browser_item->url[strlen(url)] = '\0';
-		memcpy(browser_item->url, url, strlen(url));
-
-		printf("%d %d %d %d %d\n", &browser_item->title, &browser_item->downloads, &browser_item->featured, &browser_item->type, &browser_item->url);
-
-		browser_items[content_type][index] = *browser_item;
-
+		else
+			index--;
 	}
-
-	rct_window *window = window_bring_to_front_by_class(WC_CONTENT_BROWSER);
-	if (window != NULL)
-		window_content_browser_list_populate(browser_items, item_count, window);
+	
+	window_content_browser_list_update(window);
 }
 
 static void download_list(rct_window *w){
@@ -231,10 +248,22 @@ static void install_item(content_browser_item *item){
 
 }
 
+static void free_memory(){
+	for (int type = 0; type < TYPE_COUNT; type++){
+		for (int index = 0; index < item_count[type]; index++){
+			printf("Freeing type %d, index %d. Count: %d\n", type, index, item_count[type]);
+			free(browser_items[type][index].title);
+			free(browser_items[type][index].url);
+			free(browser_items[type][index].description);
+		}
+		free(browser_items[type]);
+	}
+	free(browser_items);
+	free(item_count);
+}
+
 static void window_content_browser_close(){
-	rct_window *w;
-	window_get_register(w)
-	window_close(w);
+	free_memory();
 }
 
 static void window_content_browser_mouseup(){
@@ -298,7 +327,7 @@ static void window_content_browser_scrollmousedown(){
 	if (index >= w->no_list_items)
 		return;
 
-	clicked_item = index;
+	clicked_item = w->list_item_positions[index];
 }
 
 static void window_content_browser_scrollmouseover(){
@@ -313,10 +342,6 @@ static void window_content_browser_scrollmouseover(){
 		return;
 
 	w->selected_list_item = index;
-}
-
-static void window_content_browser_tooltip(){
-
 }
 
 static void window_content_browser_invalidate(){
@@ -339,15 +364,30 @@ static void window_content_browser_paint(){
 
 	window_draw_widgets(w, dpi);
 
-	gfx_draw_string_left_clipped(dpi, STR_CONTENT_NAME, NULL, 1, w->x + 240, w->y + WH - 61, 100);
-	gfx_draw_string_left_clipped(dpi, STR_CONTENT_DOWNLOADS, NULL, 1, w->x + 240, w->y + WH - 50, 100);
+	gfx_draw_string_left_clipped(dpi, STR_CONTENT_NAME,			NULL, 1,								w->x + 240,		w->y + WH - 127,	100);
+	gfx_draw_string_left_clipped(dpi, STR_CONTENT_DESCRIPTION,	NULL, 1,								w->x + 240,		w->y + WH - 116,	100);
+	gfx_draw_string_left_clipped(dpi, STR_CONTENT_DOWNLOADS,	NULL, 1,								w->x + 240,		w->y + WH - 50,		100);
 
 	if (clicked_item != -1){
-		
-		gfx_draw_string(dpi, browser_items[w->page][clicked_item].title, 1, w->x + 340, w->y + WH - 61);
-		char buffer[20];
-		sprintf(buffer, "%d", browser_items[w->page][clicked_item].downloads);
-		gfx_draw_string(dpi, buffer, 1, w->x + 340, w->y + WH - 50);
+		gfx_draw_string_left_clipped(dpi, 1170, &(browser_items[w->page][clicked_item].title),	1,		w->x + 340,		w->y + WH - 127,	WW - 340 - 10);
+
+		char buffer[1024];
+		int font_height;
+		int num_lines;
+		memcpy(buffer, browser_items[w->page][clicked_item].description, 1024);
+		gfx_wrap_string(buffer, WW - 340 - 10, &num_lines, &font_height);
+		for (int x = 0; x < min(num_lines, 6); x++){
+			char* line = buffer;
+			int found = 0;
+			while (found < x){
+				if (*line == 0)
+					found++;
+				line++;
+			}
+			gfx_draw_string(dpi, line, 1, w->x + 340, w->y + WH - 116 + x * 11);
+		}
+
+		gfx_draw_string_left_clipped(dpi, 5182, &(browser_items[w->page][clicked_item].downloads), 1,	w->x + 340,		w->y + WH - 50,		WW - 340 - 10);
 	}
 }
 
@@ -361,17 +401,16 @@ static void window_content_browser_scrollpaint(){
 
 	for (int i = 0; i < w->no_list_items; i++) {
 		
-		y = i * 10;
+		int list_position = w->list_item_positions[i];
 
-		content_browser_item* item = browser_items[w->page] + w->list_item_positions[i];
+		y = i * 10;
 
 		if (i == w->selected_list_item) {
 			gfx_fill_rect(dpi, 0, y, 800, y + 9, 0x02000031);
-			gfx_draw_string(dpi, item->title, 1, 5, y);
+			gfx_draw_string(dpi, browser_items[w->page][list_position].title, 1, 5, y);
 		} else {
-			gfx_draw_string(dpi, item->title, 5, 5, y);
+			gfx_draw_string(dpi, browser_items[w->page][list_position].title, 5, 5, y);
 		}
-		
 	}
 }
 
@@ -395,11 +434,10 @@ static bool filter(content_browser_item item){
 	return strstr(name_lower, filter_lower) != NULL;
 }
 
-static void window_content_browser_list_populate(content_browser_item** items, int count[], rct_window *w){
+int currentPage;
 
-	item_count = count;
-	browser_items = items;
-	window_content_browser_list_update(w);
+int compar(const void* p1, const void* p2){
+	return strcmp(browser_items[currentPage][*((uint8*)p1)].title, browser_items[currentPage][*((uint8*)p2)].title);
 }
 
 static void window_content_browser_list_update(rct_window *w){
@@ -417,6 +455,9 @@ static void window_content_browser_list_update(rct_window *w){
 	}
 
 	w->no_list_items = index;
+
+	currentPage = w->page;
+	qsort(w->list_item_positions, index, sizeof(uint8), &compar);
 
 	window_invalidate(w);
 }
