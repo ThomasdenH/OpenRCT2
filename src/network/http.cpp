@@ -51,6 +51,31 @@ static size_t http_request_write_func(void *ptr, size_t size, size_t nmemb, void
 	return newBytesLength;
 }
 
+size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+	size_t written = fwrite(ptr, size, nmemb, stream);
+	return written;
+}
+
+int http_download_file(const char *url, char *out_file_name){
+	CURL *curl;
+	CURLcode curlResult;
+	FILE *file;
+	curl = curl_easy_init();
+	if (curl == NULL)
+		return 0;
+	file = fopen(out_file_name, "wb");
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+	curl_easy_setopt(curl, CURLOPT_CAINFO, "curl-ca-bundle.crt");
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+	curlResult = curl_easy_perform(curl);
+	curl_easy_cleanup(curl);
+	fclose(file);
+	return curlResult;
+}
+
 http_json_response *http_request_json(const char *url)
 {
 	CURL *curl;

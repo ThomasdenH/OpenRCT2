@@ -62,7 +62,7 @@ enum {
 	WIDX_DOWNLOAD_BUTTON,
 };
 
-uint32 window_content_browser_enabled_widgets = (1 << WIDX_CLOSE) | (1 << WIDX_FILTER_TEXT) | (1 << WIDX_CONTENT_BROWSER) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_DOWNLOAD_BUTTON);
+uint32 window_content_browser_enabled_widgets = (1 << WIDX_CLOSE) | (1 << WIDX_FILTER_TEXT) | (1 << WIDX_CONTENT_BROWSER) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3);
 
 static rct_widget window_content_browser_widgets[] = {
 	{ WWT_FRAME,			0,	0,			WW - 1,		0,			WH - 1,		0xFFFFFFFF,				STR_NONE								},
@@ -244,14 +244,35 @@ static void download_list(rct_window *w){
 	http_request_json_async(URL_SCENARIOS, &handle_json);
 }
 
-static void install_item(content_browser_item *item){
+static bool already_installed(content_browser_item item){
+	if (item.type == TYPE_THEME){
+		char path[MAX_PATH];
+		platform_get_user_directory(path, "themes");
+		strcat(path, item.title);
+		strcat(path, ".ini");
+		return platform_file_exists(path);
+	}
+	return false;
+}
 
+static bool allow_install(content_browser_item item){
+	return !already_installed(item) && item.type != TYPE_TRACK && item.type != TYPE_SCENARIO;
+}
+
+static void install_item(content_browser_item *item){
+	if (item->type == TYPE_THEME){
+		char path[MAX_PATH];
+		platform_get_user_directory(path, "themes");
+		strcat(path, item->title);
+		strcat(path, ".zip");
+		if (!http_download_file(item->url, path))
+			puts("Error");
+	}
 }
 
 static void free_memory(){
 	for (int type = 0; type < TYPE_COUNT; type++){
 		for (int index = 0; index < item_count[type]; index++){
-			printf("Freeing type %d, index %d. Count: %d\n", type, index, item_count[type]);
 			free(browser_items[type][index].title);
 			free(browser_items[type][index].url);
 			free(browser_items[type][index].description);
@@ -328,6 +349,13 @@ static void window_content_browser_scrollmousedown(){
 		return;
 
 	clicked_item = w->list_item_positions[index];
+
+	// Disable or enable the download button
+	if (allow_install(browser_items[w->page][clicked_item]))
+		w->enabled_widgets |= 1 << WIDX_DOWNLOAD_BUTTON;
+	else
+		w->enabled_widgets &= ~(1 << WIDX_DOWNLOAD_BUTTON);
+	window_init_scroll_widgets(w);
 }
 
 static void window_content_browser_scrollmouseover(){
@@ -347,7 +375,8 @@ static void window_content_browser_scrollmouseover(){
 static void window_content_browser_invalidate(){
 	rct_window *w;
 
-	window_get_register(w);
+	window_get_register(w);	
+
 	colour_scheme_update(w);
 
 	// Set correct active tab
