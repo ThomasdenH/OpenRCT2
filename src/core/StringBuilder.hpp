@@ -96,6 +96,17 @@ public:
     }
 
     /**
+     * Modifies the buffer to be a substring of the current string, beginning at start and ending at end
+     */
+    void SubString(size_t start, size_t end)
+    {
+        _length = end - start;
+        for (size_t to = 0; to < _length; to++)
+            _buffer[to] = _buffer[start + to];
+        _buffer[_length] = 0;
+    }
+
+    /**
      * Clears the current string, but preserves the allocated memory for another string.
      */
     void Clear()
