@@ -262,7 +262,6 @@
 		D442721C1CC81B3200D84D28 /* keyboard_shortcut.c in Sources */ = {isa = PBXBuildFile; fileRef = D44271211CC81B3200D84D28 /* keyboard_shortcut.c */; };
 		D442721D1CC81B3200D84D28 /* screenshot.c in Sources */ = {isa = PBXBuildFile; fileRef = D44271231CC81B3200D84D28 /* screenshot.c */; };
 		D442721E1CC81B3200D84D28 /* Theme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44271251CC81B3200D84D28 /* Theme.cpp */; };
-		D442721F1CC81B3200D84D28 /* title_sequences.c in Sources */ = {isa = PBXBuildFile; fileRef = D44271271CC81B3200D84D28 /* title_sequences.c */; };
 		D44272201CC81B3200D84D28 /* viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = D44271291CC81B3200D84D28 /* viewport.c */; };
 		D44272211CC81B3200D84D28 /* viewport_interaction.c in Sources */ = {isa = PBXBuildFile; fileRef = D442712B1CC81B3200D84D28 /* viewport_interaction.c */; };
 		D44272221CC81B3200D84D28 /* widget.c in Sources */ = {isa = PBXBuildFile; fileRef = D442712C1CC81B3200D84D28 /* widget.c */; };
@@ -436,6 +435,7 @@
 		D464FEF51D31A6AA00CBABAC /* WaterObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D464FEE31D31A6AA00CBABAC /* WaterObject.cpp */; };
 		D46F2A9E1D39A25A00A36AB7 /* peep_data.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F2A9D1D39A25A00A36AB7 /* peep_data.c */; };
 		D47304D51C4FF8250015C0EA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D47304D41C4FF8250015C0EA /* libz.tbd */; };
+		D4867B8B1DAEF8060003B684 /* title_sequences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4867B8A1DAEF8060003B684 /* title_sequences.cpp */; };
 		D48A8D831D00272F00649DA7 /* TcpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48A8D811D00272F00649DA7 /* TcpSocket.cpp */; };
 		D49766831D03B9FE002222CD /* SoftwareDrawingEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49766811D03B9FE002222CD /* SoftwareDrawingEngine.cpp */; };
 		D49766861D03BAA5002222CD /* NewDrawing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49766841D03BAA5002222CD /* NewDrawing.cpp */; };
@@ -720,7 +720,6 @@
 		D44271241CC81B3200D84D28 /* screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = screenshot.h; sourceTree = "<group>"; };
 		D44271251CC81B3200D84D28 /* Theme.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Theme.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		D44271261CC81B3200D84D28 /* themes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = themes.h; sourceTree = "<group>"; usesTabs = 0; };
-		D44271271CC81B3200D84D28 /* title_sequences.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = title_sequences.c; sourceTree = "<group>"; };
 		D44271281CC81B3200D84D28 /* title_sequences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = title_sequences.h; sourceTree = "<group>"; };
 		D44271291CC81B3200D84D28 /* viewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = viewport.c; sourceTree = "<group>"; };
 		D442712A1CC81B3200D84D28 /* viewport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = viewport.h; sourceTree = "<group>"; };
@@ -1114,6 +1113,7 @@
 		D464FEE41D31A6AA00CBABAC /* WaterObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterObject.h; sourceTree = "<group>"; };
 		D46F2A9D1D39A25A00A36AB7 /* peep_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = peep_data.c; sourceTree = "<group>"; };
 		D47304D41C4FF8250015C0EA /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		D4867B8A1DAEF8060003B684 /* title_sequences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = title_sequences.cpp; sourceTree = "<group>"; };
 		D4895D321C23EFDD000CD788 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = distribution/macos/Info.plist; sourceTree = SOURCE_ROOT; };
 		D48A8D811D00272F00649DA7 /* TcpSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TcpSocket.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		D48A8D821D00272F00649DA7 /* TcpSocket.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = TcpSocket.h; sourceTree = "<group>"; usesTabs = 0; };
@@ -1574,7 +1574,7 @@
 				D44271241CC81B3200D84D28 /* screenshot.h */,
 				D44271251CC81B3200D84D28 /* Theme.cpp */,
 				D44271261CC81B3200D84D28 /* themes.h */,
-				D44271271CC81B3200D84D28 /* title_sequences.c */,
+				D4867B8A1DAEF8060003B684 /* title_sequences.cpp */,
 				D44271281CC81B3200D84D28 /* title_sequences.h */,
 				D442712B1CC81B3200D84D28 /* viewport_interaction.c */,
 				D44271291CC81B3200D84D28 /* viewport.c */,
@@ -2500,7 +2500,6 @@
 				007A05D11CFB2C8B00F419C3 /* NetworkPacket.cpp in Sources */,
 				D44272101CC81B3200D84D28 /* sprite.c in Sources */,
 				007A05CD1CFB2C8B00F419C3 /* NetworkAction.cpp in Sources */,
-				D442721F1CC81B3200D84D28 /* title_sequences.c in Sources */,
 				C686F8AE1CDBC37E009F9BFC /* fence.c in Sources */,
 				C686F8AC1CDBC37E009F9BFC /* banner.c in Sources */,
 				D44272671CC81B3200D84D28 /* land.c in Sources */,
@@ -2568,6 +2567,7 @@
 				D442720C1CC81B3200D84D28 /* line.c in Sources */,
 				C686F9321CDBC3B7009F9BFC /* haunted_house.c in Sources */,
 				D442720A1CC81B3200D84D28 /* drawing_fast.cpp in Sources */,
+				D4867B8B1DAEF8060003B684 /* title_sequences.cpp in Sources */,
 				C686F9521CDBC3B7009F9BFC /* river_rapids.c in Sources */,
 				008BF72C1CDAA5C30019A2AD /* track_design.c in Sources */,
 				C61FB7241CF86356004CE991 /* NetworkUser.cpp in Sources */,
